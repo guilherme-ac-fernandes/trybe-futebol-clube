@@ -4,8 +4,8 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import UserModel from '../database/models/User';
-// import UserModel from '../model/UserModel';
+
+import UserModel from '../model/UserModel';
 
 // import { Response } from 'superagent';
 
@@ -22,18 +22,18 @@ describe('Rota /login', () => {
 
   before(async () => {
     sinon
-      .stub(UserModel, "findOne")
+      .stub(UserModel.prototype, "findOne")
       .resolves({
         id: 1,
         username: 'Admin',
         role: 'admin',
         email: 'admin@admin.com',
         password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW'
-      } as UserModel);
+      });
   });
 
   after(() => {
-    (UserModel.findOne as sinon.SinonStub).restore();
+    (UserModel.prototype.findOne as sinon.SinonStub).restore();
   });
 
   // it('...', async () => {
@@ -47,11 +47,9 @@ describe('Rota /login', () => {
   it('Rota POST', async () => {
     const result = await chai.request(app).post('/login').send({
       email: 'admin@admin.com',
-      password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW'
+      password: 'secret_admin'
     });
-    expect(result.status).to.be.equal(200);
-    console.log(result.body);
-    
-    // expect(result).to.be.equal(200);
+    expect(result.status).to.be.equal(200);  
+    expect(result.body).to.have.property('token');
   });
 });
