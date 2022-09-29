@@ -11,6 +11,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         field: 'home_team',
+        foreignKey: true,
         references: {
           model: 'teams',
           key: 'id',
@@ -27,6 +28,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         field: 'away_team',
+        foreignKey: true,
         references: {
           model: 'teams',
           key: 'id',
