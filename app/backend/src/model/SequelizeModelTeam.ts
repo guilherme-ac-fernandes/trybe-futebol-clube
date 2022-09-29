@@ -9,6 +9,10 @@ abstract class SequelizeModelTeam {
   async findAll(): Promise<ICreateTeam[] | null> {
     return this._model.findAll();
   }
+
+  async findByPk(id: number): Promise<ICreateTeam | null> {
+    return this._model.findByPk(id);
+  }
 }
 
 export default SequelizeModelTeam;
