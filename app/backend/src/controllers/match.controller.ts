@@ -16,4 +16,12 @@ export default class MatchController {
     }
     return res.status(code).json(data);
   }
+
+  public async create(req: Request, res: Response, _next: NextFunction) {
+    const { code, data } = await this.service.create({ ...req.body, inProgress: true });
+    // if (message) {
+    //   return next({ code, message });
+    // }
+    return res.status(code).json(data);
+  }
 }
