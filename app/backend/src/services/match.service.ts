@@ -1,6 +1,8 @@
 import MatchModel from '../model/MatchModel';
 import { ICreateMatch, IMatch } from '../interfaces/IMatch';
 
+const MATCH_NOT_FOUND = 'Match Not found';
+
 export default class MatchService {
   constructor(private model = new MatchModel()) {}
 
@@ -15,7 +17,7 @@ export default class MatchService {
   public async findOne(id: number) {
     const match = await this.model.findByPk(id);
     if (!match) {
-      return { code: 404, message: 'Match Not found' };
+      return { code: 404, message: MATCH_NOT_FOUND };
     }
     return { code: 200, data: match };
   }
@@ -26,12 +28,18 @@ export default class MatchService {
   }
 
   public async updateFinish(id: number) {
-    await this.model.updateFinish(id);
+    const updateMatch = await this.model.updateFinish(id);
+    if (!updateMatch) {
+      return { code: 404, message: MATCH_NOT_FOUND };
+    }
     return { code: 200, data: { message: 'Finished' } };
   }
 
   public async updateMatches(id: number, homeTeamGoals: number, awayTeamGoals: number) {
-    await this.model.updateMatches(id, homeTeamGoals, awayTeamGoals);
+    const updateMatch = await this.model.updateMatches(id, homeTeamGoals, awayTeamGoals);
+    if (!updateMatch) {
+      return { code: 404, message: MATCH_NOT_FOUND };
+    }
     return { code: 200, data: { homeTeamGoals, awayTeamGoals } };
   }
 }

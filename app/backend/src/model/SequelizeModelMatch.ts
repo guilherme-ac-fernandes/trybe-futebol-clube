@@ -29,12 +29,12 @@ abstract class SequelizeModelMatch {
     return this._model.create(match);
   }
 
-  async updateFinish(id: number): Promise<void> {
-    this._model.update({ inProgress: false }, { where: { id } });
+  async updateFinish(id: number) {
+    return this._model.update({ inProgress: false }, { where: { id } });
   }
 
-  async updateMatches(id: number, homeTeamGoals: number, awayTeamGoals: number): Promise<void> {
-    this._model.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+  async updateMatches(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    return this._model.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
   }
 }
 

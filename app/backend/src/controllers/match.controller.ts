@@ -26,20 +26,26 @@ export default class MatchController {
     return res.status(code).json(data);
   }
 
-  public async updateFinish(req: Request, res: Response, _next: NextFunction) {
+  public async updateFinish(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { code, data } = await this.service.updateFinish(Number(id));
+    const { code, data, message } = await this.service.updateFinish(Number(id));
+    if (message) {
+      return next({ code, message });
+    }
     return res.status(code).json(data);
   }
 
-  public async updateMatches(req: Request, res: Response, _next: NextFunction) {
+  public async updateMatches(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { homeTeamGoals, awayTeamGoals } = req.body;
-    const { code, data } = await this.service.updateMatches(
+    const { code, data, message } = await this.service.updateMatches(
       Number(id),
       homeTeamGoals,
       awayTeamGoals,
     );
+    if (message) {
+      return next({ code, message });
+    }
     return res.status(code).json(data);
   }
 }

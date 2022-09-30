@@ -13,9 +13,9 @@ class App {
     this.config();
 
     this.app.get('/', (_req, res) => res.json({ ok: true }));
+    this.app.use('/matches', MatchRouter);
     this.app.use('/login', LoginRouter);
     this.app.use('/teams', TeamRouter);
-    this.app.use('/matches', MatchRouter);
     this.app.use(Middlewares.error);
   }
 
