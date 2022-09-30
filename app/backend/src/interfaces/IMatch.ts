@@ -1,13 +1,16 @@
 export interface IMatch {
-  homeTeam: 16,
-  homeTeamGoals: 1,
-  awayTeam: 8,
-  awayTeamGoals: 1,
-  inProgress: false,
+  homeTeam: number,
+  homeTeamGoals: number,
+  awayTeam: number,
+  awayTeamGoals: number,
+  inProgress?: boolean,
 }
 
 export interface ICreateMatch extends IMatch {
   id: number,
+}
+
+export interface IMatchIncludes extends ICreateMatch {
   teamHome: { teamName: string },
-  teamAway: { teamName: string }
+  teamAway: { teamName: string },
 }

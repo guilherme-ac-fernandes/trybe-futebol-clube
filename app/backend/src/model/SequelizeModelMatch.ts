@@ -1,3 +1,4 @@
+import { IMatch, ICreateMatch } from '../interfaces/IMatch';
 import Match from '../database/models/Match';
 import TeamModel from '../database/models/Team';
 
@@ -18,6 +19,18 @@ abstract class SequelizeModelMatch {
         { model: TeamModel, as: 'teamAway' },
       ],
     });
+  }
+
+  async findByPk(id: number): Promise<ICreateMatch | null> {
+    return this._model.findByPk(id);
+  }
+
+  async create(match: IMatch): Promise<ICreateMatch> {
+    return this._model.create(match);
+  }
+
+  async updateFinish(id: number): Promise<void> {
+    this._model.update({ inProgress: false }, { where: { id } });
   }
 }
 
