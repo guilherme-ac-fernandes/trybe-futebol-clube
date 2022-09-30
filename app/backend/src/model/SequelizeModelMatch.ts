@@ -12,7 +12,7 @@ import TeamModel from '../database/models/Team';
 abstract class SequelizeModelMatch {
   protected _model = Match;
 
-  async findAll(): Promise<Match[] | null> {
+  async findAll(): Promise<ICreateMatch[] | null> {
     return this._model.findAll({
       include: [
         { model: TeamModel, as: 'teamHome' },
