@@ -29,4 +29,9 @@ export default class MatchService {
     await this.model.updateFinish(id);
     return { code: 200, data: { message: 'Finished' } };
   }
+
+  public async updateMatches(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    await this.model.updateMatches(id, homeTeamGoals, awayTeamGoals);
+    return { code: 200, data: { homeTeamGoals, awayTeamGoals } };
+  }
 }

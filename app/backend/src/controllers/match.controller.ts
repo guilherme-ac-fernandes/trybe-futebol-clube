@@ -30,4 +30,15 @@ export default class MatchController {
     const { code, data } = await this.service.updateFinish(Number(id));
     return res.status(code).json(data);
   }
+
+  public async updateMatches(req: Request, res: Response, _next: NextFunction) {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    const { code, data } = await this.service.updateMatches(
+      Number(id),
+      homeTeamGoals,
+      awayTeamGoals,
+    );
+    return res.status(code).json(data);
+  }
 }

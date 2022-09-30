@@ -32,6 +32,10 @@ abstract class SequelizeModelMatch {
   async updateFinish(id: number): Promise<void> {
     this._model.update({ inProgress: false }, { where: { id } });
   }
+
+  async updateMatches(id: number, homeTeamGoals: number, awayTeamGoals: number): Promise<void> {
+    this._model.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+  }
 }
 
 export default SequelizeModelMatch;
