@@ -22,14 +22,5 @@ export default async (req: Request, _res: Response, next: NextFunction) => {
     });
   }
 
-  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // if (!(email.match(emailRegex))) {
-  //   return next({ code: 400, message: 'Incorrect email or password' });
-  // }
-
-  // if (!password || password.length < 7) {
-  //   return next({ code: 400, message: 'All fields must be filled' });
-  // }
-
   next();
 };
