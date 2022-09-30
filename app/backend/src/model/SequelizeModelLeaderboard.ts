@@ -6,10 +6,18 @@ import MatchModel from '../database/models/Match';
 abstract class SequelizeModelLeaderboard {
   protected _model = Team;
 
-  async findAll() {
+  async findAllHome() {
     return this._model.findAll({
       include: [
         { model: MatchModel, as: 'matchHome', where: { inProgress: 0 } },
+      ],
+    });
+  }
+
+  async findAllAway() {
+    return this._model.findAll({
+      include: [
+        { model: MatchModel, as: 'matchAway', where: { inProgress: 0 } },
       ],
     });
   }
