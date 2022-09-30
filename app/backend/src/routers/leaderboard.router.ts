@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import MatchController from '../controllers/match.controller';
+import LeaderboardController from '../controllers/leaderboard.controller';
 
 const router = Router();
-const matchController = new MatchController();
+const leaderboardController = new LeaderboardController();
 
-router.get('/home', matchController.findAll.bind(matchController));
+router.get('/home', leaderboardController.findAll.bind(leaderboardController));
 
 export default router;
