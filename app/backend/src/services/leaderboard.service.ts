@@ -10,7 +10,7 @@ export default class LeaderboardService {
       return { code: 404, message: 'Not Found' };
     }
     const boardMatches = teamMatches.map(BoardHome.generateBoard);
-    const sortBoard = boardMatches.sort(BoardHome.sortBoard);
+    const sortBoard = BoardHome.sortBoard(boardMatches);
     return { code: 200, data: sortBoard };
   }
 }

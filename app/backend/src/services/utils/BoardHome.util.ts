@@ -9,20 +9,16 @@ export default class BoardHome {
   }
 
   static matchResults(matches: any) {
-    const results = {
-      totalVictories: 0,
-      totalDraws: 0,
-      totalLosses: 0,
-      totalPoints: 0,
-    };
-
+    const results = { totalVictories: 0, totalDraws: 0, totalLosses: 0, totalPoints: 0 };
     matches.forEach((match: any) => {
       if (match.homeTeamGoals > match.awayTeamGoals) {
         results.totalVictories += 1;
         results.totalPoints += 3;
+        return;
       }
       if (match.homeTeamGoals < match.awayTeamGoals) {
         results.totalLosses += 1;
+        return;
       }
       results.totalDraws += 1;
       results.totalPoints += 1;
@@ -34,10 +30,10 @@ export default class BoardHome {
     return Number((totalPoints / (totalMatches * 3)) * 100).toFixed(2);
   }
 
-  static generateBoard({ teamName, matchesHome }: any) {
-    const totalGames = matchesHome.length;
-    const goals = BoardHome.goals(matchesHome);
-    const result = BoardHome.matchResults(matchesHome);
+  static generateBoard({ teamName, matchHome }: any) {
+    const totalGames = matchHome.length;
+    const goals = BoardHome.goals(matchHome);
+    const result = BoardHome.matchResults(matchHome);
     const efficiency = BoardHome.efficiency(result.totalPoints, totalGames);
     return {
       name: teamName,
