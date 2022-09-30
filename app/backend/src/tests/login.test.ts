@@ -143,6 +143,8 @@ describe('Rota /login', () => {
 
   describe('Rota GET /validate', () => {
     before(async () => {
+      // Implementação do stub na biblioteca jwt baseada na resolução presente no ITecNote
+      // source: https://itecnote.com/tecnote/javascript-writing-unit-tests-for-method-that-uses-jwt-token-in-javascript/
       sinon.stub(jwt, 'verify').callsFake(() => {
         return Promise.resolve({ success: 'Token is valid' });
       });
@@ -155,6 +157,8 @@ describe('Rota /login', () => {
 
     it('Caso de Administrador', async () => {
       const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+      // Requisição com autentificação proveniente da documentação e aula do Especialista Lucas Henrique de Abreu
+      // source: https://www.chaijs.com/plugins/chai-http/
       const result = await chai
         .request(app)
         .get('/login/validate')
