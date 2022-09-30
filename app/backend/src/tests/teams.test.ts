@@ -26,10 +26,12 @@ describe('Rota /teams', () => {
     it('Caso de sucesso', async () => {
       const result = await chai.request(app).get('/teams');
       expect(result.status).to.be.equal(200);
-      expect(result.body).to.be.a('array');
-      expect(result.body).to.have.length(3);
+      expect(result.body).to.deep.equal(ARRAY_TEAMS);
+      expect(result.body).to.be.an('array');
+      expect(result.body).to.have.length(ARRAY_TEAMS.length);
       expect(result.body[0]).to.have.property('id');
       expect(result.body[0]).to.have.property('teamName');
+
     });
   });
 
@@ -40,7 +42,7 @@ describe('Rota /teams', () => {
     it('Caso de falha', async () => {
       const result = await chai.request(app).get('/teams');
       expect(result.status).to.be.equal(404);
-      expect(result.body).to.be.a('object');
+      expect(result.body).to.be.an('object');
       expect(result.body).to.have.property('message');
       expect(result.body.message).to.be.equal('Not found any team');
     });
