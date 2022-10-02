@@ -1,12 +1,14 @@
+import IBoard from '../../interfaces/IBoard';
+
 export default class BoardHome {
-  static goals(teamHome: any, teamAway: any) {
+  static goals(teamHome: IBoard, teamAway: IBoard) {
     const goalsFavor = teamHome.goalsFavor + teamAway.goalsFavor;
     const goalsOwn = teamHome.goalsOwn + teamAway.goalsOwn;
     const goalsBalance = goalsFavor - goalsOwn;
     return { goalsFavor, goalsOwn, goalsBalance };
   }
 
-  static matchResults(teamHome: any, teamAway: any) {
+  static matchResults(teamHome: IBoard, teamAway: IBoard) {
     const results = {
       totalVictories: teamHome.totalVictories + teamAway.totalVictories,
       totalDraws: teamHome.totalDraws + teamAway.totalDraws,
@@ -16,16 +18,16 @@ export default class BoardHome {
     return results;
   }
 
-  static efficiency(teamHome: any, teamAway: any) {
+  static efficiency(teamHome: IBoard, teamAway: IBoard) {
     const totalPoints = teamHome.totalPoints + teamAway.totalPoints;
     const totalGames = teamHome.totalGames + teamAway.totalGames;
     return Number(((totalPoints / (totalGames * 3)) * 100)).toFixed(2);
   }
 
-  static generateBoard(dataHome: any, dataAway: any) {
-    const leaderboardArray = [] as any;
-    dataHome.forEach((teamHome: any) => {
-      const teamAway = dataAway.find((team: any) => team.name === teamHome.name);
+  static generateBoard(dataHome: IBoard[], dataAway: IBoard[]) {
+    const leaderboardArray = [] as unknown as IBoard[];
+    dataHome.forEach((teamHome: IBoard, index: number) => {
+      const teamAway = dataAway[index];
       const totalGames = teamHome.totalGames + teamAway.totalGames;
       const goals = BoardHome.goals(teamHome, teamAway);
       const result = BoardHome.matchResults(teamHome, teamAway);
@@ -38,11 +40,11 @@ export default class BoardHome {
         efficiency,
       });
     });
-    return leaderboardArray;
+    return leaderboardArray as IBoard[];
   }
 
-  static sortBoard(board: any) {
-    return board.sort((a: any, b: any) => {
+  static sortBoard(board: IBoard[]) {
+    return board.sort((a: IBoard, b: IBoard) => {
       if (a.totalPoints < b.totalPoints) return 1;
       if (a.totalPoints > b.totalPoints) return -1;
       if (a.totalVictories < b.totalVictories) return 1;
