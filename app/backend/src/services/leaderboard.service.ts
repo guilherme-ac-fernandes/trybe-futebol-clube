@@ -13,7 +13,7 @@ export default class LeaderboardService {
       return { code: 404, message: 'Not Found' };
     }
     const boardMatches = BoardHome.generateBoard(teamMatches);
-    const sortBoard = BoardHome.sortBoard(boardMatches);
+    const sortBoard = LeaderboardService.sortBoard(boardMatches);
     return { code: 200, data: sortBoard };
   }
 
@@ -23,7 +23,7 @@ export default class LeaderboardService {
       return { code: 404, message: 'Not Found' };
     }
     const boardMatches = BoardAway.generateBoard(teamMatches);
-    const sortBoard = BoardAway.sortBoard(boardMatches);
+    const sortBoard = LeaderboardService.sortBoard(boardMatches);
     return { code: 200, data: sortBoard };
   }
 
@@ -36,7 +36,7 @@ export default class LeaderboardService {
     dataHome.sort(LeaderboardService.sortTeamName);
     dataAway.sort(LeaderboardService.sortTeamName);
     const leaderboard = BoardMain.generateBoard(dataHome, dataAway);
-    const sortBoard = BoardMain.sortBoard(leaderboard);
+    const sortBoard = LeaderboardService.sortBoard(leaderboard);
     return { code: 200, data: sortBoard };
   }
 
@@ -44,5 +44,21 @@ export default class LeaderboardService {
     if (a.name < b.name) return 1;
     if (a.name > b.name) return -1;
     return 0;
+  }
+
+  static sortBoard(board: IBoard[]) {
+    return board.sort((a: IBoard, b: IBoard) => {
+      if (a.totalPoints < b.totalPoints) return 1;
+      if (a.totalPoints > b.totalPoints) return -1;
+      if (a.totalVictories < b.totalVictories) return 1;
+      if (a.totalVictories > b.totalVictories) return -1;
+      if (a.goalsBalance < b.goalsBalance) return 1;
+      if (a.goalsBalance > b.goalsBalance) return -1;
+      if (a.goalsFavor < b.goalsFavor) return 1;
+      if (a.goalsFavor > b.goalsFavor) return -1;
+      if (a.goalsOwn < b.goalsOwn) return 1;
+      if (a.goalsOwn > b.goalsOwn) return -1;
+      return 0;
+    });
   }
 }
