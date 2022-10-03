@@ -5,7 +5,7 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 
-import TeamModel from '../model/LeaderboardModel';
+import LeaderboardModel from '../model/LeaderboardModel';
 
 chai.use(chaiHttp);
 
@@ -205,8 +205,8 @@ const ARRAY_BOARD = [
 describe('Rota /leaderboard', () => {
 
   describe('Rota GET /home', () => {
-      before(async () => sinon.stub(TeamModel.prototype, "findAllHome").resolves(ARRAY_TEAM_HOME));
-      after(() => (TeamModel.prototype.findAllHome as sinon.SinonStub).restore());
+      before(async () => sinon.stub(LeaderboardModel.prototype, "findAllHome").resolves(ARRAY_TEAM_HOME));
+      after(() => (LeaderboardModel.prototype.findAllHome as sinon.SinonStub).restore());
   
     it('Caso de sucesso', async () => {
       const result = await chai.request(app).get('/leaderboard/home');
@@ -218,8 +218,8 @@ describe('Rota /leaderboard', () => {
   });
 
   describe('Rota GET /away', () => {
-    before(async () => sinon.stub(TeamModel.prototype, "findAllAway").resolves(ARRAY_TEAM_AWAY));
-    after(() => (TeamModel.prototype.findAllAway as sinon.SinonStub).restore());
+    before(async () => sinon.stub(LeaderboardModel.prototype, "findAllAway").resolves(ARRAY_TEAM_AWAY));
+    after(() => (LeaderboardModel.prototype.findAllAway as sinon.SinonStub).restore());
 
     it('Caso de sucesso', async () => {
       const result = await chai.request(app).get('/leaderboard/away');
@@ -232,12 +232,12 @@ describe('Rota /leaderboard', () => {
 
   describe('Rota GET /', () => {
     before(async () => {
-      sinon.stub(TeamModel.prototype, "findAllHome").resolves(ARRAY_TEAM_HOME);
-      sinon.stub(TeamModel.prototype, "findAllAway").resolves(ARRAY_TEAM_AWAY);
+      sinon.stub(LeaderboardModel.prototype, "findAllHome").resolves(ARRAY_TEAM_HOME);
+      sinon.stub(LeaderboardModel.prototype, "findAllAway").resolves(ARRAY_TEAM_AWAY);
     });
     after(() => {
-      (TeamModel.prototype.findAllHome as sinon.SinonStub).restore();
-      (TeamModel.prototype.findAllAway as sinon.SinonStub).restore();
+      (LeaderboardModel.prototype.findAllHome as sinon.SinonStub).restore();
+      (LeaderboardModel.prototype.findAllAway as sinon.SinonStub).restore();
     });
 
     it('Caso de sucesso', async () => {
