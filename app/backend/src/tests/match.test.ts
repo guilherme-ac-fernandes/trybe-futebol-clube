@@ -8,6 +8,7 @@ import { app } from '../app';
 
 import MatchModel from '../model/MatchModel';
 import UserModel from '../model/UserModel';
+import TeamModel from '../model/TeamModel';
 
 chai.use(chaiHttp);
 
@@ -37,19 +38,19 @@ const ARRAY_MATCHES = [
 ];
 
 const CREATE_MATCH = {
-  homeTeam: 16,
-  awayTeam: 8,
-  homeTeamGoals: 2,
-  awayTeamGoals: 2
+  homeTeam: 3,
+  awayTeam: 5,
+  homeTeamGoals: 3,
+  awayTeamGoals: 1,
 }
 
 const NEW_MATCH = {
-  id: 1,
-  homeTeam: 16,
-  homeTeamGoals: 2,
-  awayTeam: 8,
-  awayTeamGoals: 2,
-  inProgress: true,
+  id: 3,
+  homeTeam: 3,
+  awayTeam: 5,
+  homeTeamGoals: 3,
+  awayTeamGoals: 1,
+  inProgress: true
 };
 
 const ADMIN_USER = {
@@ -82,7 +83,6 @@ describe('Rota /matches', () => {
   
     it('Caso de falha', async () => {
       const result = await chai.request(app).get('/matches');
-      
       expect(result.status).to.be.equal(404);
       expect(result.body).to.be.an('object');
       expect(result.body).to.have.property('message');
@@ -96,14 +96,12 @@ describe('Rota /matches', () => {
     after(() => (MatchModel.prototype.findAll as sinon.SinonStub).restore());
   
     it('Caso de sucesso', async () => {
-      const ARRAY_MATCHES_TRUE = ARRAY_MATCHES.filter((match) => match.inProgress === true)
+      const ARRAY_MATCHES_TRUE = ARRAY_MATCHES.filter((match) => match.inProgress === true);
       const result = await chai.request(app).get('/matches?inProgress=true');
-     
       expect(result.status).to.be.equal(200);
       expect(result.body).to.deep.equal(ARRAY_MATCHES_TRUE);
       expect(result.body).to.be.an('array');
       expect(result.body).to.have.length(ARRAY_MATCHES_TRUE.length);
-
     });
   });
 
@@ -112,48 +110,50 @@ describe('Rota /matches', () => {
     after(() => (MatchModel.prototype.findAll as sinon.SinonStub).restore());
   
     it('Caso de sucesso', async () => {
-      const ARRAY_MATCHES_FALSE = ARRAY_MATCHES.filter((match) => match.inProgress === false)
+      const ARRAY_MATCHES_FALSE = ARRAY_MATCHES.filter((match) => match.inProgress === false);
       const result = await chai.request(app).get('/matches?inProgress=false');
-     
       expect(result.status).to.be.equal(200);
       expect(result.body).to.deep.equal(ARRAY_MATCHES_FALSE);
       expect(result.body).to.be.an('array');
       expect(result.body).to.have.length(ARRAY_MATCHES_FALSE.length);
-
     });
   });
 
-  // describe('Rota POST /', () => {
- 
-  //   before(async () => {
-  //     sinon.stub(jwt, 'verify').callsFake(() => {
-  //       return Promise.resolve({ success: 'Token is valid' });
-  //     });
-  //     sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER);
-  //     sinon.stub(MatchModel.prototype, "create").resolves(NEW_MATCH);
-  //   });
-  //   after(() => {
-  //     (MatchModel.prototype.create as sinon.SinonStub).restore();
-  //     (UserModel.prototype.findOne as sinon.SinonStub).restore();
-  //     (jwt.verify as sinon.SinonStub).restore();
-  //   });
+  describe('Rota POST /', () => {
+    before(async () => {
+      sinon.stub(jwt, 'verify').callsFake(() => {
+        return Promise.resolve({ success: 'Token is valid' });
+      });
+      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER);
+      // Utilização de diferentes resolves utilizando OnFirstCall e onSecondCall
+      // proveniente de uma resolução presente no site TabNine
+      // source: https://www.tabnine.com/code/javascript/functions/sinon/SinonStub/onFirstCall
+      sinon.stub(TeamModel.prototype, 'findByPk')
+        .onFirstCall()
+        .resolves({ id: 3, teamName: "Botafogo" })
+        .onSecondCall()
+        .resolves({ id: 5, teamName: "Cruzeiro" });
+      sinon.stub(MatchModel.prototype, "create").resolves(NEW_MATCH);
+    });
+    after(() => {
+      (jwt.verify as sinon.SinonStub).restore();
+      (UserModel.prototype.findOne as sinon.SinonStub).restore();
+      (TeamModel.prototype.findByPk as sinon.SinonStub).restore();
+      (MatchModel.prototype.create as sinon.SinonStub).restore();
+    });
 
-  //   it('Caso de sucesso', async () => {
-  //     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
-  //     const result = await chai
-  //       .request(app)
-  //       .post('/matches')
-  //       .send(CREATE_MATCH)
-  //       .set('authorization', token);
+    it('Caso de sucesso', async () => {
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+      const result = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', token)
+        .send(CREATE_MATCH);
 
-  //     console.log(result.status, result.body);
-      
-  //     expect(result.status).to.be.equal(200);
-  //     expect(result.body).to.deep.equal(ARRAY_MATCHES);
-  //     expect(result.body).to.be.an('array');
-  //     expect(result.body).to.have.length(ARRAY_MATCHES.length);
+      expect(result.status).to.be.equal(201);
+      expect(result.body).to.deep.equal(NEW_MATCH);
 
-  //   });
-  // });
+    });
+  });
   
 });
