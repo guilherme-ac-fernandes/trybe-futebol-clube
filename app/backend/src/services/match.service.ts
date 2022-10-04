@@ -28,18 +28,20 @@ export default class MatchService {
   }
 
   public async updateFinish(id: number) {
-    const updateMatch = await this.model.updateFinish(id);
-    if (!updateMatch) {
-      return { code: 404, message: MATCH_NOT_FOUND };
-    }
+    const { data } = await this.findOne(id);
+    if (!data) return { code: 404, message: MATCH_NOT_FOUND };
+    await this.model.updateFinish(id);
     return { code: 200, data: { message: 'Finished' } };
   }
 
-  public async updateMatches(id: number, homeTeamGoals: number, awayTeamGoals: number) {
-    const updateMatch = await this.model.updateMatches(id, homeTeamGoals, awayTeamGoals);
-    if (!updateMatch) {
-      return { code: 404, message: MATCH_NOT_FOUND };
-    }
+  public async updateMatches(
+    id: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ) {
+    const { data } = await this.findOne(id);
+    if (!data) return { code: 404, message: MATCH_NOT_FOUND };
+    await this.model.updateMatches(id, homeTeamGoals, awayTeamGoals);
     return { code: 200, data: { homeTeamGoals, awayTeamGoals } };
   }
 }

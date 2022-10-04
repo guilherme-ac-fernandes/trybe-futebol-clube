@@ -42,7 +42,21 @@ const CREATE_MATCH = {
   awayTeam: 5,
   homeTeamGoals: 3,
   awayTeamGoals: 1,
-}
+};
+
+const CREATE_MATCH_TEAMS_EQUAL = {
+  homeTeam: 1,
+  awayTeam: 1,
+  homeTeamGoals: 1,
+  awayTeamGoals: 1,
+};
+
+const CREATE_MATCH_TEAM_DONT_EXIST = {
+  homeTeam: 1,
+  awayTeam: 99999,
+  homeTeamGoals: 1,
+  awayTeamGoals: 1,
+};
 
 const NEW_MATCH = {
   id: 3,
@@ -60,6 +74,14 @@ const ADMIN_USER = {
   email: 'admin@admin.com',
   password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
 };
+
+const UPDATE_MATCH = {
+  "homeTeamGoals": 3,
+  "awayTeamGoals": 1
+};
+
+const TEAM_BOTAFOGO = { id: 3, teamName: "Botafogo" };
+const TEAM_CRUZEIRO = { id: 5, teamName: "Cruzeiro" };
 
 describe('Rota /matches', () => {
 
@@ -130,9 +152,9 @@ describe('Rota /matches', () => {
       // source: https://www.tabnine.com/code/javascript/functions/sinon/SinonStub/onFirstCall
       sinon.stub(TeamModel.prototype, 'findByPk')
         .onFirstCall()
-        .resolves({ id: 3, teamName: "Botafogo" })
+        .resolves(TEAM_BOTAFOGO)
         .onSecondCall()
-        .resolves({ id: 5, teamName: "Cruzeiro" });
+        .resolves(TEAM_CRUZEIRO);
       sinon.stub(MatchModel.prototype, "create").resolves(NEW_MATCH);
     });
     after(() => {
@@ -152,7 +174,127 @@ describe('Rota /matches', () => {
 
       expect(result.status).to.be.equal(201);
       expect(result.body).to.deep.equal(NEW_MATCH);
+    });
+  });
 
+  describe('Rota POST /', () => {
+    before(async () => {
+      sinon.stub(jwt, 'verify').callsFake(() => {
+        return Promise.resolve({ success: 'Token is valid' });
+      });
+      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER);
+    });
+    after(() => {
+      (jwt.verify as sinon.SinonStub).restore();
+      (UserModel.prototype.findOne as sinon.SinonStub).restore();
+    });
+
+    it('Caso de falha - Times iguais', async () => {
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+      const result = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', token)
+        .send(CREATE_MATCH_TEAMS_EQUAL);
+      
+      expect(result.status).to.be.equal(401);
+      expect(result.body).to.be.an('object');
+      expect(result.body).to.have.property('message');
+      expect(result.body.message).to.be.equal('It is not possible to create a match with two equal teams');
+    });
+  });
+
+  describe('Rota POST /', () => {
+    before(async () => {
+      sinon.stub(jwt, 'verify').callsFake(() => {
+        return Promise.resolve({ success: 'Token is valid' });
+      });
+      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER);
+      sinon.stub(TeamModel.prototype, 'findByPk')
+        .onFirstCall()
+        .resolves(TEAM_BOTAFOGO)
+        .onSecondCall()
+        .resolves(null);
+    });
+    after(() => {
+      (jwt.verify as sinon.SinonStub).restore();
+      (UserModel.prototype.findOne as sinon.SinonStub).restore();
+      (TeamModel.prototype.findByPk as sinon.SinonStub).restore();
+
+    });
+
+    it('Caso de falha - Time não existente', async () => {
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+      const result = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', token)
+        .send(CREATE_MATCH_TEAM_DONT_EXIST);
+      
+      expect(result.status).to.be.equal(404);
+      expect(result.body).to.be.an('object');
+      expect(result.body).to.have.property('message');
+      expect(result.body.message).to.be.equal('There is no team with such id!');
+    });
+  });
+
+  describe('Rota POST /', () => {
+    it('Caso de falha - Token Inválido', async () => {
+      const token = 'invalid_token';
+      const result = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', token)
+        .send(CREATE_MATCH);
+      
+      expect(result.status).to.be.equal(401);
+      expect(result.body).to.be.an('object');
+      expect(result.body).to.have.property('message');
+      expect(result.body.message).to.be.equal('Token must be a valid token');
+    });
+  });
+
+
+  describe('Rota POST /', () => {
+    before(async () => {
+      sinon.stub(MatchModel.prototype, 'findByPk').resolves(ARRAY_MATCHES[0]);
+      sinon.stub(MatchModel.prototype, 'updateFinish').resolves();
+    });
+    after(() => {
+      (MatchModel.prototype.findByPk as sinon.SinonStub).restore();
+      (MatchModel.prototype.updateFinish as sinon.SinonStub).restore();
+    });
+
+    it('Caso de sucesso', async () => {
+      const result = await chai
+        .request(app)
+        .patch('/matches/1/finish');
+
+      expect(result.status).to.be.equal(200);
+      expect(result.body).to.be.an('object');
+      expect(result.body).to.have.property('message');
+      expect(result.body.message).to.be.equal('Finished');
+    });
+  });
+
+  describe('Rota POST /', () => {
+    before(async () => {
+      sinon.stub(MatchModel.prototype, 'findByPk').resolves(ARRAY_MATCHES[0]);
+      sinon.stub(MatchModel.prototype, 'updateMatches').resolves();
+    });
+    after(() => {
+      (MatchModel.prototype.findByPk as sinon.SinonStub).restore();
+      (MatchModel.prototype.updateMatches as sinon.SinonStub).restore();
+    });
+
+    it('Caso de sucesso', async () => {
+      const result = await chai
+        .request(app)
+        .patch('/matches/1')
+        .send(UPDATE_MATCH);
+      
+      expect(result.status).to.be.equal(200);
+      expect(result.body).to.deep.equal(UPDATE_MATCH);
     });
   });
   
