@@ -9,9 +9,6 @@ export default class LeaderboardService {
 
   public async findAllHome() {
     const teamMatches = await this.model.findAllHome() as unknown as ITeamHome[];
-    if (!teamMatches) {
-      return { code: 404, message: 'Not Found' };
-    }
     const boardMatches = BoardHome.generateBoard(teamMatches);
     const sortBoard = LeaderboardService.sortBoard(boardMatches);
     return { code: 200, data: sortBoard };
@@ -19,9 +16,6 @@ export default class LeaderboardService {
 
   public async findAllAway() {
     const teamMatches = await this.model.findAllAway() as unknown as ITeamAway[];
-    if (!teamMatches) {
-      return { code: 404, message: 'Not Found' };
-    }
     const boardMatches = BoardAway.generateBoard(teamMatches);
     const sortBoard = LeaderboardService.sortBoard(boardMatches);
     return { code: 200, data: sortBoard };
@@ -30,9 +24,6 @@ export default class LeaderboardService {
   public async findAll() {
     const { data: dataHome } = await this.findAllHome();
     const { data: dataAway } = await this.findAllAway();
-    if (!dataHome || !dataAway) {
-      return { code: 404, message: 'Not Found' };
-    }
     dataHome.sort(LeaderboardService.sortTeamName);
     dataAway.sort(LeaderboardService.sortTeamName);
     const leaderboard = BoardMain.generateBoard(dataHome, dataAway);
