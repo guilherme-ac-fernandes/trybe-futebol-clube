@@ -83,6 +83,8 @@ const UPDATE_MATCH = {
 const TEAM_BOTAFOGO = { id: 3, teamName: "Botafogo" };
 const TEAM_CRUZEIRO = { id: 5, teamName: "Cruzeiro" };
 
+const VALID_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+
 describe('Rota /matches', () => {
   describe('Rota GET /', () => {
     before(async () => sinon.stub(MatchModel.prototype, "findAll").resolves(ARRAY_MATCHES));
@@ -162,11 +164,10 @@ describe('Rota /matches', () => {
     });
 
     it('Caso de sucesso', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
       const result = await chai
         .request(app)
         .post('/matches')
-        .set('authorization', token)
+        .set('authorization', VALID_TOKEN)
         .send(CREATE_MATCH);
 
       expect(result.status).to.be.equal(201);
@@ -187,11 +188,10 @@ describe('Rota /matches', () => {
     });
 
     it('Caso de falha - Times iguais', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
       const result = await chai
         .request(app)
         .post('/matches')
-        .set('authorization', token)
+        .set('authorization', VALID_TOKEN)
         .send(CREATE_MATCH_TEAMS_EQUAL);
       
       expect(result.status).to.be.equal(401);
@@ -221,11 +221,10 @@ describe('Rota /matches', () => {
     });
 
     it('Caso de falha - Time não existente', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
       const result = await chai
         .request(app)
         .post('/matches')
-        .set('authorization', token)
+        .set('authorization', VALID_TOKEN)
         .send(CREATE_MATCH_TEAM_DONT_EXIST);
       
       expect(result.status).to.be.equal(404);
@@ -237,11 +236,10 @@ describe('Rota /matches', () => {
 
   describe('Rota POST /', () => {
     it('Caso de falha - Token Inválido', async () => {
-      const token = 'invalid_token';
       const result = await chai
         .request(app)
         .post('/matches')
-        .set('authorization', token)
+        .set('authorization', 'invalid_token')
         .send(CREATE_MATCH);
       
       expect(result.status).to.be.equal(401);
@@ -252,7 +250,7 @@ describe('Rota /matches', () => {
   });
 
 
-  describe('Rota POST /', () => {
+  describe('Rota PATCH /', () => {
     before(async () => {
       sinon.stub(MatchModel.prototype, 'findByPk').resolves(ARRAY_MATCHES[0]);
       sinon.stub(MatchModel.prototype, 'updateFinish').resolves();
@@ -272,7 +270,7 @@ describe('Rota /matches', () => {
     });
   });
 
-  describe('Rota POST /', () => {
+  describe('Rota PATCH /', () => {
     before(async () => {
       sinon.stub(MatchModel.prototype, 'findByPk').resolves(ARRAY_MATCHES[0]);
       sinon.stub(MatchModel.prototype, 'updateMatches').resolves();
