@@ -10,9 +10,7 @@ export default class LoginService {
 
   public async login(user: ILogin) {
     const foundUser = await this.model.findOne(user.email);
-    if (!foundUser) {
-      return { code: 401, message: INCORRECT_EMAIL };
-    }
+    if (!foundUser) return { code: 401, message: INCORRECT_EMAIL };
     if (!BcryptService.compare(foundUser.password, user.password)) {
       return { code: 401, message: INCORRECT_EMAIL };
     }
@@ -22,9 +20,7 @@ export default class LoginService {
 
   public async getByEmail(email: string) {
     const foundUser = await this.model.findOne(email);
-    if (!foundUser) {
-      return { code: 401, message: INCORRECT_EMAIL };
-    }
+    if (!foundUser) return { code: 401, message: INCORRECT_EMAIL };
     return foundUser;
   }
 }

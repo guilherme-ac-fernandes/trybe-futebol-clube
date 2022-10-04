@@ -8,17 +8,13 @@ export default class MatchService {
 
   public async findAll() {
     const matches = await this.model.findAll() as unknown as ICreateMatch[];
-    if (!matches) {
-      return { code: 404, message: 'Not found any matches' };
-    }
+    if (!matches) return { code: 404, message: 'Not found any matches' };
     return { code: 200, data: matches };
   }
 
   public async findOne(id: number) {
     const match = await this.model.findByPk(id);
-    if (!match) {
-      return { code: 404, message: MATCH_NOT_FOUND };
-    }
+    if (!match) return { code: 404, message: MATCH_NOT_FOUND };
     return { code: 200, data: match };
   }
 
