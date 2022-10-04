@@ -84,7 +84,6 @@ const TEAM_BOTAFOGO = { id: 3, teamName: "Botafogo" };
 const TEAM_CRUZEIRO = { id: 5, teamName: "Cruzeiro" };
 
 describe('Rota /matches', () => {
-
   describe('Rota GET /', () => {
     before(async () => sinon.stub(MatchModel.prototype, "findAll").resolves(ARRAY_MATCHES));
     after(() => (MatchModel.prototype.findAll as sinon.SinonStub).restore());
@@ -95,7 +94,6 @@ describe('Rota /matches', () => {
       expect(result.body).to.deep.equal(ARRAY_MATCHES);
       expect(result.body).to.be.an('array');
       expect(result.body).to.have.length(ARRAY_MATCHES.length);
-
     });
   });
 
@@ -109,7 +107,6 @@ describe('Rota /matches', () => {
       expect(result.body).to.be.an('object');
       expect(result.body).to.have.property('message');
       expect(result.body.message).to.be.equal('Not found any matches');
-
     });
   });
 
@@ -266,9 +263,7 @@ describe('Rota /matches', () => {
     });
 
     it('Caso de sucesso', async () => {
-      const result = await chai
-        .request(app)
-        .patch('/matches/1/finish');
+      const result = await chai.request(app).patch('/matches/1/finish');
 
       expect(result.status).to.be.equal(200);
       expect(result.body).to.be.an('object');
@@ -288,14 +283,10 @@ describe('Rota /matches', () => {
     });
 
     it('Caso de sucesso', async () => {
-      const result = await chai
-        .request(app)
-        .patch('/matches/1')
-        .send(UPDATE_MATCH);
+      const result = await chai.request(app).patch('/matches/1').send(UPDATE_MATCH);
       
       expect(result.status).to.be.equal(200);
       expect(result.body).to.deep.equal(UPDATE_MATCH);
     });
   });
-  
 });

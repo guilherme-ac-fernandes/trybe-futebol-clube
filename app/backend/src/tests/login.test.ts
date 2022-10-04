@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-const ADMIN_USER = {
+const ADMIN_USER_OBJECT = {
   id: 1,
   username: 'Admin',
   role: 'admin',
@@ -20,7 +20,7 @@ const ADMIN_USER = {
   password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
 };
 
-const NOT_ADMIN_USER = {
+const NOT_ADMIN_USER_OBJECT = {
   id: 2,
   username: 'User',
   role: 'user',
@@ -28,11 +28,11 @@ const NOT_ADMIN_USER = {
   password: '$2a$08$Y8Abi8jXvsXyqm.rmp0B.uQBA5qUz7T6Ghlg/CvVr/gLxYj5UAZVO',
 };
 
+const VALID_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+
 describe('Rota /login', () => {
   describe('Rota POST /', () => {
-    before(async () =>
-      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER)
-    );
+    before(async () => sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER_OBJECT));
     after(() => (UserModel.prototype.findOne as sinon.SinonStub).restore());
 
     it('Caso de sucesso', async () => {
@@ -71,7 +71,7 @@ describe('Rota /login', () => {
     it('Caso de falha - Campo password inválido', async () => {
       const result = await chai.request(app).post('/login').send({
         email: 'admin@admin.com',
-        password: '123',
+        password: 'abc',
       });
       expect(result.status).to.be.equal(400);
       expect(result.body).to.be.a('object');
@@ -81,9 +81,7 @@ describe('Rota /login', () => {
   });
 
   describe('Rota POST /', () => {
-    before(async () =>
-      sinon.stub(UserModel.prototype, 'findOne').resolves(null)
-    );
+    before(async () => sinon.stub(UserModel.prototype, 'findOne').resolves(null));
     after(() => (UserModel.prototype.findOne as sinon.SinonStub).restore());
 
     it('Caso de falha - Usuário não existente', async () => {
@@ -99,15 +97,13 @@ describe('Rota /login', () => {
   });
 
   describe('Rota POST /', () => {
-    before(async () =>
-      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER)
-    );
+    before(async () => sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER_OBJECT));
     after(() => (UserModel.prototype.findOne as sinon.SinonStub).restore());
 
     it('Caso de falha - Password errado', async () => {
       const result = await chai.request(app).post('/login').send({
         email: 'admin@admin.com',
-        password: 'secret_admin2',
+        password: 'not_secret_admin',
       });
       expect(result.status).to.be.equal(401);
       expect(result.body).to.be.a('object');
@@ -121,7 +117,7 @@ describe('Rota /login', () => {
       sinon.stub(jwt, 'verify').callsFake(() => {
         return Promise.resolve({ success: 'Token is valid' });
       });
-      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER);
+      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER_OBJECT);
     });
     after(() => {
       (UserModel.prototype.findOne as sinon.SinonStub).restore();
@@ -129,12 +125,7 @@ describe('Rota /login', () => {
     });
 
     it('Caso de sucesso', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
-      const result = await chai
-        .request(app)
-        .get('/login/validate')
-        .set('authorization', token);
-
+      const result = await chai.request(app).get('/login/validate').set('authorization', VALID_TOKEN);
       expect(result.status).to.be.equal(200);
       expect(result.body).to.have.property('role');
       expect(result.body.role).to.be.equal('admin');
@@ -148,22 +139,17 @@ describe('Rota /login', () => {
       sinon.stub(jwt, 'verify').callsFake(() => {
         return Promise.resolve({ success: 'Token is valid' });
       });
-      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER);
+      sinon.stub(UserModel.prototype, 'findOne').resolves(ADMIN_USER_OBJECT);
     });
     after(() => {
       (UserModel.prototype.findOne as sinon.SinonStub).restore();
       (jwt.verify as sinon.SinonStub).restore();
     });
 
-    it('Caso de Administrador', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
+    it('Caso de usuário ADMIN', async () => {
       // Requisição com autentificação proveniente da documentação e aula do Especialista Lucas Henrique de Abreu
       // source: https://www.chaijs.com/plugins/chai-http/
-      const result = await chai
-        .request(app)
-        .get('/login/validate')
-        .set('authorization', token);
-
+      const result = await chai.request(app).get('/login/validate').set('authorization', VALID_TOKEN);
       expect(result.status).to.be.equal(200);
       expect(result.body).to.have.property('role');
       expect(result.body.role).to.be.equal('admin');
@@ -175,24 +161,18 @@ describe('Rota /login', () => {
       sinon.stub(jwt, 'verify').callsFake(() => {
         return Promise.resolve({ success: 'Token is valid' });
       });
-      sinon.stub(UserModel.prototype, 'findOne').resolves(NOT_ADMIN_USER);
+      sinon.stub(UserModel.prototype, 'findOne').resolves(NOT_ADMIN_USER_OBJECT);
     });
     after(() => {
       (UserModel.prototype.findOne as sinon.SinonStub).restore();
       (jwt.verify as sinon.SinonStub).restore();
     });
 
-    it('Caso de não Administrador', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY2NDUwNDc4MCwiZXhwIjoxNjY0NTkxMTgwfQ.lYN2ImWYl-ejFGAMEClZzcFS6I3Bx4PX2lfS47v9rus';
-      const result = await chai
-        .request(app)
-        .get('/login/validate')
-        .set('authorization', token);
-
+    it('Caso de usuário que não é o ADMIN', async () => {
+      const result = await chai.request(app).get('/login/validate').set('authorization', VALID_TOKEN);
       expect(result.status).to.be.equal(401);
       expect(result.body).to.have.property('message');
       expect(result.body.message).to.be.equal('User not Admin');
     });
   });
-
 });

@@ -205,8 +205,8 @@ const ARRAY_BOARD = [
 describe('Rota /leaderboard', () => {
 
   describe('Rota GET /home', () => {
-      before(async () => sinon.stub(LeaderboardModel.prototype, "findAllHome").resolves(ARRAY_TEAM_HOME));
-      after(() => (LeaderboardModel.prototype.findAllHome as sinon.SinonStub).restore());
+    before(async () => sinon.stub(LeaderboardModel.prototype, "findAllHome").resolves(ARRAY_TEAM_HOME));
+    after(() => (LeaderboardModel.prototype.findAllHome as sinon.SinonStub).restore());
   
     it('Caso de sucesso', async () => {
       const result = await chai.request(app).get('/leaderboard/home');

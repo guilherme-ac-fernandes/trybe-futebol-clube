@@ -18,7 +18,6 @@ const ARRAY_TEAMS = [
 ];
 
 describe('Rota /teams', () => {
-
   describe('Rota GET /', () => {
     before(async () => sinon.stub(TeamModel.prototype, "findAll").resolves(ARRAY_TEAMS));
     after(() => (TeamModel.prototype.findAll as sinon.SinonStub).restore());
