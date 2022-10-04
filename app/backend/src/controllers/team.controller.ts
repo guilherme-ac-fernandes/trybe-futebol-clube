@@ -6,18 +6,14 @@ export default class TeamController {
 
   public async findAll(_req: Request, res: Response, next: NextFunction) {
     const { code, data, message } = await this.service.findAll();
-    if (message) {
-      return next({ code, message });
-    }
+    if (message) return next({ code, message });
     return res.status(code).json(data);
   }
 
   public async findByPk(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { code, data, message } = await this.service.findByPk(Number(id));
-    if (message) {
-      return next({ code, message });
-    }
+    if (message) return next({ code, message });
     return res.status(code).json(data);
   }
 }

@@ -6,11 +6,8 @@ export default class MatchController {
 
   public async findAll(req: Request, res: Response, next: NextFunction) {
     const { inProgress } = req.query;
-
     const { code, data, message } = await this.service.findAll();
-    if (message) {
-      return next({ code, message });
-    }
+    if (message) return next({ code, message });
     if (inProgress === 'true' || inProgress === 'false') {
       const matchesFilter = data?.filter((match) => `${match.inProgress}` === inProgress);
       return res.status(code).json(matchesFilter);
@@ -20,18 +17,13 @@ export default class MatchController {
 
   public async create(req: Request, res: Response, _next: NextFunction) {
     const { code, data } = await this.service.create({ ...req.body, inProgress: true });
-    // if (message) {
-    //   return next({ code, message });
-    // }
     return res.status(code).json(data);
   }
 
   public async updateFinish(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { code, data, message } = await this.service.updateFinish(Number(id));
-    if (message) {
-      return next({ code, message });
-    }
+    if (message) return next({ code, message });
     return res.status(code).json(data);
   }
 
@@ -43,9 +35,7 @@ export default class MatchController {
       homeTeamGoals,
       awayTeamGoals,
     );
-    if (message) {
-      return next({ code, message });
-    }
+    if (message) return next({ code, message });
     return res.status(code).json(data);
   }
 }
