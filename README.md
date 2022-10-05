@@ -1,6 +1,6 @@
 # Projeto Trybe Futebol Clube ⚽️🏆
 
-- A partir de uma aplicação Front-End construída pela _[Trybe](https://www.betrybe.com)_, foi desenvolvido um API para prover as informações necessárias para apresentação ao usuário, que consiste em um site informativo sobre partidas e classificações de futebol!
+A partir de uma aplicação Front-End construída pela _[Trybe](https://www.betrybe.com)_, foi desenvolvido um API para prover as informações necessárias para apresentação ao usuário, que consiste em um site informativo sobre partidas e classificações de futebol!
 
 * Construída com Node.js, Express, Typescript, MySQL, Sequelize e Docker
 * Utilizando os princípios SOLID e Programação Orientada a Objetos
