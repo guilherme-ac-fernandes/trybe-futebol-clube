@@ -26,7 +26,7 @@ cd app/backend && npm test
 ### Demonstração
 
 <p align="center">
-  <img src="" alt="Trybe Futebol Clube - Demostração"/>
+  <img src="https://github.com/guilherme-ac-fernandes/trybe-futebol-clube/blob/main/tfc_classificacao.png" alt="Trybe Futebol Clube - Demostração"/>
 </p>
 
 ### Endpoints
