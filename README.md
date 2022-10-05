@@ -1,6 +1,6 @@
 # Projeto Trybe Futebol Clube ⚽️🏆
 
-A partir de uma aplicação Front-End construída pela _[Trybe](https://www.betrybe.com)_, foi desenvolvido um API para prover as informações necessárias para apresentação ao usuário, que consiste em um site informativo sobre partidas e classificações de futebol!
+A partir de uma aplicação Front-End desenvolvida pela _[Trybe](https://www.betrybe.com)_, foi desenvolvido um API para prover as informações necessárias para um site informativo sobre partidas e classificações de futebol!
 
 * Construída com Node.js, Express, Typescript, MySQL, Sequelize e Docker
 * Utilizando os princípios SOLID e Programação Orientada a Objetos
@@ -9,7 +9,7 @@ A partir de uma aplicação Front-End construída pela _[Trybe](https://www.betr
 
 ### Instruções
 
-- Para rodar o repositório localmente, realize o clone do projeto e utilize os comandos a seguir para inicializar o Docker:
+- Para rodar o repositório localmente, realize o clone do projeto e utilize o comando a seguir para inicializar o Docker (front-end, back-end e banco de dados):
 
 ```
 npm run compose:up
@@ -42,7 +42,7 @@ Nessa requisição POST é necessário informar o seguinte JSON:
 
 ```
 {
-  "email": "Usuário",
+  "email": "Nome do Usuário",
   "password": "senha_secreta"
 }
 ```
@@ -65,7 +65,7 @@ Nessa requisição POST é necessário informar o seguinte JSON:
 | `GET` | Retorna todos as partidas cadastradas finalizadas | http://localhost:3001/matches?inProgress=false |
 | `POST` | Criação de uma nova partida | http://localhost:3001/matches |
 | `PATCH` | Atualiza a chave 'inProgress' para finalidado de uma partida específica | http://localhost:3001/matches/:id/finish |
-| `PATCH` | Atualiza os gols de uma partida específica| http://localhost:3001/matches/:id |
+| `PATCH` | Atualiza os gols de uma partida específica | http://localhost:3001/matches/:id |
 
 Nessa requisição POST é necessário informar o seguinte JSON:
 
@@ -79,6 +79,14 @@ Nessa requisição POST é necessário informar o seguinte JSON:
 }
 ```
 
+e na requisição PATCH para atualizar os gols realizados é necessário informar o seguinte JSON:
+
+```
+{
+  "homeTeamGoals": 3,
+  "awayTeamGoals": 1
+}
+```
 
 #### Placar
 
