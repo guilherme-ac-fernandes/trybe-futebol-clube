@@ -5,6 +5,7 @@ A partir de uma aplicação Front-End desenvolvida pela _[Trybe](https://www.bet
 * Construída com Node.js, Express, Typescript, MySQL, Sequelize e Docker
 * Utilizando os princípios SOLID e Programação Orientada a Objetos
 * Aplicando Arquitetura de Software, com as camadas de Modelo, Serviço e de Controladores
+* Testes de Integração criadas utilizando Mocha, Chai, ChaiHTTP e Sinon
 
 
 ### Instruções
